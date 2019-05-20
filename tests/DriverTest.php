@@ -37,16 +37,27 @@ class DriverTest extends TestCase
     /**
      * Tests gossips and relations between drivers.
      */
-    public function testGossips()
+    public function testExchangeGossips()
     {
-        $gossips = [];
-        $driver = new Driver([1]);
-        $gossips = $driver->getGossips();
-        $this->assertEquals($gossips, $driver->getGossips());
+        // Creating three drivers
+        // First one knows only his gossip
+        $driverOne = new Driver([1]);
 
+        // Those two should exchange gossips
         $driverTwo = new Driver([1]);
-        $gossips = array_merge($gossips, $driverTwo->getGossips());
-        $this->assertNotEquals($gossips, $driverTwo->getGossips());
+        $driverThree = new Driver([1]);
+
+        $gossips = $driverTwo->getGossips();
+
+        $gossips = array_merge($gossips, $driverThree->getGossips());
+        $driverTwo->exchangeGossips($driverThree);
+
+        // Second and third should know the same gossips
+        $this->assertEquals($gossips, $driverThree->getGossips());
+        $this->assertEquals($gossips, $driverTwo->getGossips());
+
+        // First should know only his
+        $this->assertNotEquals($gossips, $driverOne->getGossips());
     }
 
     /**

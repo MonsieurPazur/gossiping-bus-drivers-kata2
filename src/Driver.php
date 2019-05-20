@@ -73,6 +73,18 @@ class Driver
      */
     private function initGossip(): void
     {
-        $this->gossips[] = substr(md5((string)time()), 0, 8);
+        $this->gossips[] = substr(md5((microtime())), 0, 8);
+    }
+
+    /**
+     * Exchanges gossips between two drivers.
+     *
+     * @param Driver $another other driver to exchange gossips with
+     */
+    public function exchangeGossips(Driver $another): void
+    {
+        $commonGossips = array_unique(array_merge($this->getGossips(), $another->getGossips()));
+        $this->gossips = $commonGossips;
+        $another->gossips = $commonGossips;
     }
 }
