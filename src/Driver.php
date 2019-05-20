@@ -87,4 +87,16 @@ class Driver
         $this->gossips = $commonGossips;
         $another->gossips = $commonGossips;
     }
+
+    /**
+     * Checks whether this driver knows all given gossips.
+     *
+     * @param array $gossips gossips that we check against
+     *
+     * @return bool true, if this driver knows all given gossips
+     */
+    public function knowsGossips(array $gossips): bool
+    {
+        return array_diff($gossips, $this->gossips) === [];
+    }
 }

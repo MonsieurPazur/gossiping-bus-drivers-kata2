@@ -61,6 +61,26 @@ class DriverTest extends TestCase
     }
 
     /**
+     * Tests driver knowing all gossips.
+     */
+    public function testDriverKnowsAllGossips()
+    {
+        $allGossips = [];
+        $driverOne = new Driver([1]);
+        $driverTwo = new Driver([1]);
+        $driverThree = new Driver([1]);
+
+        $allGossips = array_merge($allGossips, $driverOne->getGossips());
+        $allGossips = array_merge($allGossips, $driverTwo->getGossips());
+        $allGossips = array_merge($allGossips, $driverThree->getGossips());
+
+        $driverOne->exchangeGossips($driverTwo);
+        $driverThree->exchangeGossips($driverTwo);
+
+        $this->assertTrue($driverThree->knowsGossips($allGossips));
+    }
+
+    /**
      * Provides data for testing moving to next stop.
      *
      * @return Generator
