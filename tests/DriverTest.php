@@ -43,6 +43,10 @@ class DriverTest extends TestCase
         $driver = new Driver([1]);
         $gossips = $driver->getGossips();
         $this->assertEquals($gossips, $driver->getGossips());
+
+        $driverTwo = new Driver([1]);
+        $gossips = array_merge($gossips, $driverTwo->getGossips());
+        $this->assertNotEquals($gossips, $driverTwo->getGossips());
     }
 
     /**

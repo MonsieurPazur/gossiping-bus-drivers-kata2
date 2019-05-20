@@ -37,6 +37,7 @@ class Driver
         $this->route = $route;
         $this->currentStop = 0;
         $this->gossips = [];
+        $this->initGossip();
     }
 
     /**
@@ -65,5 +66,13 @@ class Driver
     public function getGossips(): array
     {
         return $this->gossips;
+    }
+
+    /**
+     * Creates pseudo-random gossip, unique to this driver.
+     */
+    private function initGossip(): void
+    {
+        $this->gossips[] = substr(md5((string)time()), 0, 8);
     }
 }
