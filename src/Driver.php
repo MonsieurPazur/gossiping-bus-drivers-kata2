@@ -69,14 +69,6 @@ class Driver
     }
 
     /**
-     * Creates pseudo-random gossip, unique to this driver.
-     */
-    private function initGossip(): void
-    {
-        $this->gossips[] = substr(md5((microtime())), 0, 8);
-    }
-
-    /**
      * Exchanges gossips between two drivers.
      *
      * @param Driver $another other driver to exchange gossips with
@@ -98,5 +90,25 @@ class Driver
     public function knowsGossips(array $gossips): bool
     {
         return array_diff($gossips, $this->gossips) === [];
+    }
+
+    /**
+     * Checks whether this driver is on the same stop as another one.
+     *
+     * @param Driver $another other driver
+     *
+     * @return bool true if both drivers are on the same stop
+     */
+    public function isOnSameStop(Driver $another): bool
+    {
+        return $this->currentStop === $another->currentStop;
+    }
+
+    /**
+     * Creates pseudo-random gossip, unique to this driver.
+     */
+    private function initGossip(): void
+    {
+        $this->gossips[] = substr(md5((microtime())), 0, 8);
     }
 }

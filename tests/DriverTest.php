@@ -80,6 +80,13 @@ class DriverTest extends TestCase
         $this->assertTrue($driverThree->knowsGossips($allGossips));
     }
 
+    public function testSameStop()
+    {
+        $driverOne = new Driver([1]);
+        $driverTwo = new Driver([1]);
+        $this->assertTrue($driverOne->isOnSameStop($driverTwo));
+    }
+
     /**
      * Provides data for testing moving to next stop.
      *
