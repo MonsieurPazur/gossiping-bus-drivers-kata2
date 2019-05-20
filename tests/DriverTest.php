@@ -19,5 +19,9 @@ class DriverTest extends TestCase
     {
         $driver = new Driver([1]);
         $this->assertEquals(1, $driver->getCurrentStop());
+
+        $driver = new Driver([1, 2]);
+        $driver->nextStop();
+        $this->assertEquals(2, $driver->getCurrentStop());
     }
 }

@@ -18,6 +18,11 @@ class Driver
     private $route;
 
     /**
+     * @var int $currentStop index of this driver's current stop
+     */
+    private $currentStop;
+
+    /**
      * Driver constructor.
      *
      * @param array $route this driver's route to follow
@@ -25,6 +30,7 @@ class Driver
     public function __construct(array $route)
     {
         $this->route = $route;
+        $this->currentStop = 0;
     }
 
     /**
@@ -34,6 +40,14 @@ class Driver
      */
     public function getCurrentStop(): int
     {
-        return $this->route[0];
+        return $this->route[$this->currentStop];
+    }
+
+    /**
+     * Moves driver to next stop on his route.
+     */
+    public function nextStop(): void
+    {
+        $this->currentStop++;
     }
 }
