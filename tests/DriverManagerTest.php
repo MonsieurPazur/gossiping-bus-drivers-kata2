@@ -22,9 +22,9 @@ class DriverManagerTest extends TestCase
      * @dataProvider driversProvider
      *
      * @param array $routes
-     * @param int $expected
+     * @param int|string $expected
      */
-    public function testDriverManager(array $routes, int $expected)
+    public function testDriverManager(array $routes, $expected)
     {
         $manager = new DriverManager();
         foreach ($routes as $route) {
@@ -46,6 +46,28 @@ class DriverManagerTest extends TestCase
                 [1]
             ],
             'expected' => 1
+        ];
+        yield 'two drivers, short routes' => [
+            'routes' => [
+                [2, 1],
+                [1]
+            ],
+            'expected' => 2
+        ];
+        yield 'three varying drivers' => [
+            'routes' => [
+                [3, 1, 2, 3],
+                [3, 2, 3, 1],
+                [4, 2, 3, 4, 5]
+            ],
+            'expected' => 5
+        ];
+        yield 'never' => [
+            'routes' => [
+                [2, 1, 2],
+                [5, 2, 8]
+            ],
+            'expected' => DriverManager::MIN_NEVER
         ];
     }
 }
