@@ -7,6 +7,7 @@
 namespace Test;
 
 use App\Driver;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,13 +16,45 @@ use PHPUnit\Framework\TestCase;
  */
 class DriverTest extends TestCase
 {
-    public function testDriver()
+    /**
+     * Tests moving driver to next stop(s).
+     *
+     * @dataProvider nextStopsProvider
+     *
+     * @param array $route this drivers route
+     * @param int $nextStops how many stops should we move driver to
+     * @param int $expected current driver's stop number
+     */
+    public function testNextStops(array $route, int $nextStops, int $expected)
     {
-        $driver = new Driver([1]);
-        $this->assertEquals(1, $driver->getCurrentStop());
+        $driver = new Driver($route);
+        for ($i = 0; $i < $nextStops; $i++) {
+            $driver->nextStop();
+        }
+        $this->assertEquals($expected, $driver->getCurrentStop());
+    }
 
-        $driver = new Driver([1, 2]);
-        $driver->nextStop();
-        $this->assertEquals(2, $driver->getCurrentStop());
+    /**
+     * Provides data for testing moving to next stop.
+     *
+     * @return Generator
+     */
+    public function nextStopsProvider()
+    {
+        yield 'no stops' => [
+            'route' => [1],
+            'nextStops' => 0,
+            'expected' => 1
+        ];
+        yield 'next stop' => [
+            'route' => [1, 2],
+            'nextStops' => 1,
+            'expected' => 2
+        ];
+        yield 'route wrap' => [
+            'route' => [1, 2],
+            'nextStops' => 2,
+            'expected' => 1
+        ];
     }
 }

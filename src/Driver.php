@@ -48,6 +48,6 @@ class Driver
      */
     public function nextStop(): void
     {
-        $this->currentStop++;
+        $this->currentStop = ++$this->currentStop % count($this->route);
     }
 }
