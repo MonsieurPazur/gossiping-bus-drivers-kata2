@@ -68,14 +68,16 @@ class DriverTest extends TestCase
      *
      * @dataProvider sameStopProvider
      *
-     * @param array $driverList
+     * @param array $routes
      * @param int $nextStops
      * @param bool $expected
      */
-    public function testSameStop(array $driverList, int $nextStops, bool $expected)
+    public function testSameStop(array $routes, int $nextStops, bool $expected)
     {
-        $drivers[] = new Driver($driverList[0]['route']);
-        $drivers[] = new Driver($driverList[1]['route']);
+        $drivers = [];
+        foreach ($routes as $route) {
+            $drivers[] = new Driver($route);
+        }
         for ($i = 0; $i < $nextStops; $i++) {
             foreach ($drivers as $driver) {
                 $driver->nextStop();
@@ -138,25 +140,17 @@ class DriverTest extends TestCase
     public function sameStopProvider()
     {
         yield 'same initial' => [
-            'drivers' => [
-                [
-                    'route' => [1],
-                ],
-                [
-                    'route' => [1],
-                ]
+            'routes' => [
+                [1],
+                [1]
             ],
             'nextStops' => 0,
             'expected' => true
         ];
         yield 'next stop' => [
-            'drivers' => [
-                [
-                    'route' => [1, 2],
-                ],
-                [
-                    'route' => [1, 3],
-                ]
+            'routes' => [
+                [1, 2],
+                [1, 3]
             ],
             'nextStops' => 1,
             'expected' => false

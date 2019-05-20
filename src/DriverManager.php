@@ -34,4 +34,9 @@ class DriverManager
     {
         $this->drivers[] = new Driver($route);
     }
+
+    public function getMinimumStops()
+    {
+        return 1;
+    }
 }

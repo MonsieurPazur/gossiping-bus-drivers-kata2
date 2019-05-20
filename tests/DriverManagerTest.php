@@ -7,6 +7,7 @@
 namespace Test;
 
 use App\DriverManager;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,11 +16,36 @@ use PHPUnit\Framework\TestCase;
  */
 class DriverManagerTest extends TestCase
 {
-    public function testDriverManager()
+    /**
+     * Tests minimum amount of stops for drivers to know all gossip.
+     *
+     * @dataProvider driversProvider
+     *
+     * @param array $routes
+     * @param int $expected
+     */
+    public function testDriverManager(array $routes, int $expected)
     {
         $manager = new DriverManager();
-        $manager->addDriver([1]);
-        $manager->addDriver([2]);
-        $this->assertTrue(true);
+        foreach ($routes as $route) {
+            $manager->addDriver($route);
+        }
+        $this->assertEquals($expected, $manager->getMinimumStops());
+    }
+
+    /**
+     * Provides data for calculating minimum amount of stops for drivers to know all gossips.
+     *
+     * @return Generator
+     */
+    public function driversProvider()
+    {
+        yield 'two drivers, shortest route' => [
+            'routes' => [
+                [1],
+                [1]
+            ],
+            'expected' => 1
+        ];
     }
 }
