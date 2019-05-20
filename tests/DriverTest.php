@@ -35,63 +35,57 @@ class DriverTest extends TestCase
     }
 
     /**
-     * Tests gossips and relations between drivers.
+     * Tests driver knowing all gossips.
+     *
+     * @dataProvider exchangeProvider
+     *
+     * @param int $numberOfDrivers
+     * @param bool $expected
      */
-    public function testExchangeGossips()
+    public function testDriverKnowsAllGossips(int $numberOfDrivers, bool $expected)
     {
-        // Creating three drivers
-        // First one knows only his gossip
-        $driverOne = new Driver([1]);
-
-        // Those two should exchange gossips
-        $driverTwo = new Driver([1]);
-        $driverThree = new Driver([1]);
-
-        $gossips = $driverTwo->getGossips();
-
-        $gossips = array_merge($gossips, $driverThree->getGossips());
-        $driverTwo->exchangeGossips($driverThree);
-
-        // Second and third should know the same gossips
-        $this->assertEquals($gossips, $driverThree->getGossips());
-        $this->assertEquals($gossips, $driverTwo->getGossips());
-
-        // First should know only his
-        $this->assertNotEquals($gossips, $driverOne->getGossips());
+        $gossips = [];
+        $drivers = [];
+        for ($i = 0; $i < $numberOfDrivers; $i++) {
+            $driver = new Driver([1]);
+            $drivers[] = $driver;
+            $gossips = array_merge($gossips, $driver->getGossips());
+        }
+        for ($i = 0; $i < count($drivers); $i++) {
+            for ($j = $i + 1; $j < count($drivers); $j++) {
+                $drivers[$i]->exchangeGossips($drivers[$j]);
+            }
+        }
+        if ($expected) {
+            $this->assertTrue(end($drivers)->knowsGossips($gossips));
+        } else {
+            $this->assertFalse(end($drivers)->knowsGossips($gossips));
+        }
     }
 
     /**
-     * Tests driver knowing all gossips.
+     * Tests whether two drivers are on the same stop.
+     *
+     * @dataProvider sameStopProvider
+     *
+     * @param array $driverList
+     * @param int $nextStops
+     * @param bool $expected
      */
-    public function testDriverKnowsAllGossips()
+    public function testSameStop(array $driverList, int $nextStops, bool $expected)
     {
-        $allGossips = [];
-        $driverOne = new Driver([1]);
-        $driverTwo = new Driver([1]);
-        $driverThree = new Driver([1]);
-
-        $allGossips = array_merge($allGossips, $driverOne->getGossips());
-        $allGossips = array_merge($allGossips, $driverTwo->getGossips());
-        $allGossips = array_merge($allGossips, $driverThree->getGossips());
-
-        $driverOne->exchangeGossips($driverTwo);
-        $driverThree->exchangeGossips($driverTwo);
-
-        $this->assertTrue($driverThree->knowsGossips($allGossips));
-    }
-
-    public function testSameStop()
-    {
-        $driverOne = new Driver([1]);
-        $driverTwo = new Driver([1]);
-        $this->assertTrue($driverOne->isOnSameStop($driverTwo));
-
-
-        $driverOne = new Driver([1, 2]);
-        $driverOne->nextStop();
-        $driverTwo = new Driver([1, 3]);
-        $driverTwo->nextStop();
-        $this->assertFalse($driverOne->isOnSameStop($driverTwo));
+        $drivers[] = new Driver($driverList[0]['route']);
+        $drivers[] = new Driver($driverList[1]['route']);
+        for ($i = 0; $i < $nextStops; $i++) {
+            foreach ($drivers as $driver) {
+                $driver->nextStop();
+            }
+        }
+        if ($expected) {
+            $this->assertTrue($drivers[0]->isOnSameStop($drivers[1]));
+        } else {
+            $this->assertFalse($drivers[0]->isOnSameStop($drivers[1]));
+        }
     }
 
     /**
@@ -115,6 +109,57 @@ class DriverTest extends TestCase
             'route' => [1, 2],
             'nextStops' => 2,
             'expected' => 1
+        ];
+    }
+
+    /**
+     * Provides data for exchanging gossips between drivers.
+     *
+     * @return Generator
+     */
+    public function exchangeProvider()
+    {
+        yield 'single driver' => [
+            'numberOfDrivers' => 1,
+            'expected' => true
+        ];
+        yield 'five drivers' => [
+            'numberOfDrivers' => 5,
+            'expected' => true
+        ];
+    }
+
+    /**
+     * Provides data for checking if two drivers are on the same stop
+     * after some steps.
+     *
+     * @return Generator
+     */
+    public function sameStopProvider()
+    {
+        yield 'same initial' => [
+            'drivers' => [
+                [
+                    'route' => [1],
+                ],
+                [
+                    'route' => [1],
+                ]
+            ],
+            'nextStops' => 0,
+            'expected' => true
+        ];
+        yield 'next stop' => [
+            'drivers' => [
+                [
+                    'route' => [1, 2],
+                ],
+                [
+                    'route' => [1, 3],
+                ]
+            ],
+            'nextStops' => 1,
+            'expected' => false
         ];
     }
 }
