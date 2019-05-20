@@ -23,6 +23,11 @@ class Driver
     private $currentStop;
 
     /**
+     * @var string[] $gossips list of gossips known to this driver
+     */
+    private $gossips;
+
+    /**
      * Driver constructor.
      *
      * @param array $route this driver's route to follow
@@ -31,6 +36,7 @@ class Driver
     {
         $this->route = $route;
         $this->currentStop = 0;
+        $this->gossips = [];
     }
 
     /**
@@ -49,5 +55,15 @@ class Driver
     public function nextStop(): void
     {
         $this->currentStop = ++$this->currentStop % count($this->route);
+    }
+
+    /**
+     * Gets list of gossips known to this driver
+     *
+     * @return array list of gossips known to this driver
+     */
+    public function getGossips(): array
+    {
+        return $this->gossips;
     }
 }

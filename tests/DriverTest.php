@@ -35,6 +35,17 @@ class DriverTest extends TestCase
     }
 
     /**
+     * Tests gossips and relations between drivers.
+     */
+    public function testGossips()
+    {
+        $gossips = [];
+        $driver = new Driver([1]);
+        $gossips = $driver->getGossips();
+        $this->assertEquals($gossips, $driver->getGossips());
+    }
+
+    /**
      * Provides data for testing moving to next stop.
      *
      * @return Generator
