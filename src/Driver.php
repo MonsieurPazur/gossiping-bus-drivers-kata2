@@ -18,9 +18,9 @@ class Driver
     private $route;
 
     /**
-     * @var int $currentStop index of this driver's current stop
+     * @var int $currentStopIndex index of this driver's current stop
      */
-    private $currentStop;
+    private $currentStopIndex;
 
     /**
      * @var string[] $gossips list of gossips known to this driver
@@ -35,7 +35,7 @@ class Driver
     public function __construct(array $route)
     {
         $this->route = $route;
-        $this->currentStop = 0;
+        $this->currentStopIndex = 0;
         $this->gossips = [];
         $this->initGossip();
     }
@@ -47,7 +47,7 @@ class Driver
      */
     public function getCurrentStop(): int
     {
-        return $this->route[$this->currentStop];
+        return $this->route[$this->currentStopIndex];
     }
 
     /**
@@ -55,7 +55,7 @@ class Driver
      */
     public function nextStop(): void
     {
-        $this->currentStop = ++$this->currentStop % count($this->route);
+        $this->currentStopIndex = ++$this->currentStopIndex % count($this->route);
     }
 
     /**
@@ -101,7 +101,7 @@ class Driver
      */
     public function isOnSameStop(Driver $another): bool
     {
-        return $this->currentStop === $another->currentStop;
+        return $this->getCurrentStop() === $another->getCurrentStop();
     }
 
     /**

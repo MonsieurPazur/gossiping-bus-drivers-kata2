@@ -85,6 +85,13 @@ class DriverTest extends TestCase
         $driverOne = new Driver([1]);
         $driverTwo = new Driver([1]);
         $this->assertTrue($driverOne->isOnSameStop($driverTwo));
+
+
+        $driverOne = new Driver([1, 2]);
+        $driverOne->nextStop();
+        $driverTwo = new Driver([1, 3]);
+        $driverTwo->nextStop();
+        $this->assertFalse($driverOne->isOnSameStop($driverTwo));
     }
 
     /**
